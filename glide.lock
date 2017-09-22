@@ -1,0 +1,59 @@
+hash: 2e159ed3f6ce8a0666ebe63df6e5ec61a80bdb77581326538f2a9c710feba6da
+updated: 2017-09-22T11:47:04.013069419+01:00
+imports:
+- name: bazil.org/fuse
+  version: 371fbbdaa8987b715bdd21d6adc4c9b20155f748
+  subpackages:
+  - fs
+  - fuseutil
+- name: github.com/boltdb/bolt
+  version: 2f1ce7a837dcb8da3ec595b1dac9d0632f0f99e8
+- name: github.com/claudetech/loggo
+  version: 9fe141f123920517bbf7cafbf0b16b38dc9d8ad8
+  subpackages:
+  - default
+- name: github.com/GitbookIO/syncgroup
+  version: fa1bffcc8e3e62a3c3c85c9682c2a40a1cfbe38b
+- name: github.com/golang/protobuf
+  version: 4bd1920723d7b7c925de087aa32e2187708897f7
+  subpackages:
+  - proto
+- name: github.com/mattn/go-colorable
+  version: ad5389df28cdac544c99bd7b9161a0b5b6ca9d1b
+- name: github.com/mattn/go-isatty
+  version: fc9e8d8ef48496124e79ae0df75490096eccf6fe
+- name: github.com/mgutz/ansi
+  version: 9520e82c474b0a04dd04f8a40959027271bab992
+- name: github.com/ogier/pflag
+  version: 32a05c62658bd1d7c7e75cbc8195de5d585fde0f
+- name: golang.org/x/net
+  version: f2499483f923065a842d38eb4c7f1927e6fc6e6d
+  subpackages:
+  - context
+  - context/ctxhttp
+- name: golang.org/x/oauth2
+  version: a6bd8cefa1811bd24b86f8902872e4e8225f74c4
+  subpackages:
+  - internal
+- name: golang.org/x/sys
+  version: 8f0908ab3b2457e2e15403d3697c9ef5cb4b57a9
+  subpackages:
+  - unix
+- name: google.golang.org/api
+  version: 513727a0f0db0404fd7639c243a29e466bed6ca4
+  subpackages:
+  - drive/v3
+  - gensupport
+  - googleapi
+  - googleapi/internal/uritemplates
+- name: google.golang.org/appengine
+  version: 12d5545dc1cfa6047a286d5e853841b6471f4c19
+  subpackages:
+  - internal
+  - internal/base
+  - internal/datastore
+  - internal/log
+  - internal/remote_api
+  - internal/urlfetch
+  - urlfetch
+testImports: []

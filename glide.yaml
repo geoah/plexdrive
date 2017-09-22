@@ -1,0 +1,25 @@
+package: github.com/dweidenfeld/plexdrive
+import:
+- package: bazil.org/fuse
+  subpackages:
+  - fs
+- package: github.com/boltdb/bolt
+  version: ^1.3.1
+- package: github.com/claudetech/loggo
+  subpackages:
+  - default
+- package: github.com/ogier/pflag
+  version: ^0.0.1
+- package: golang.org/x/net
+  subpackages:
+  - context
+- package: golang.org/x/oauth2
+- package: golang.org/x/sys
+  subpackages:
+  - unix
+- package: google.golang.org/api
+  subpackages:
+  - drive/v3
+  - googleapi
+- package: github.com/GitbookIO/syncgroup
+  version: ^0.2.0
