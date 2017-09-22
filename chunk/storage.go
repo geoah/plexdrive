@@ -2,7 +2,6 @@ package chunk
 
 import (
 	"errors"
-	"sync"
 
 	. "github.com/claudetech/loggo/default"
 )
@@ -14,9 +13,8 @@ var ErrTimeout = errors.New("timeout")
 type Storage struct {
 	ChunkSize int64
 	MaxChunks int
-	chunks    map[string][]byte
+	cache     Cache
 	stack     *Stack
-	lock      sync.Mutex
 }
 
 // Item represents a chunk in RAM
@@ -26,11 +24,11 @@ type Item struct {
 }
 
 // NewStorage creates a new storage
-func NewStorage(chunkSize int64, maxChunks int) *Storage {
+func NewStorage(chunkSize int64, maxChunks int, cache Cache) *Storage {
 	storage := Storage{
 		ChunkSize: chunkSize,
 		MaxChunks: maxChunks,
-		chunks:    make(map[string][]byte),
+		cache:     cache,
 		stack:     NewStack(maxChunks),
 	}
 
@@ -39,35 +37,33 @@ func NewStorage(chunkSize int64, maxChunks int) *Storage {
 
 // Clear removes all old chunks on disk (will be called on each program start)
 func (s *Storage) Clear() error {
-	return nil
+	return s.cache.Clear()
 }
 
 // Load a chunk from ram or creates it
 func (s *Storage) Load(id string) []byte {
-	s.lock.Lock()
-	if chunk, exists := s.chunks[id]; exists {
-		s.lock.Unlock()
+	if chunk := s.cache.Load(id); chunk != nil {
 		s.stack.Touch(id)
 		return chunk
 	}
-	s.lock.Unlock()
 	return nil
 }
 
 // Store stores a chunk in the RAM and adds it to the disk storage queue
 func (s *Storage) Store(id string, bytes []byte) error {
-	s.lock.Lock()
-
 	deleteID := s.stack.Pop()
 	if "" != deleteID {
-		delete(s.chunks, deleteID)
-
-		Log.Debugf("Deleted chunk %v", deleteID)
+		if err := s.cache.Remove(id); err != nil {
+			Log.Warningf("Could not delete chunk %s, err: %s", deleteID, err)
+		} else {
+			Log.Debugf("Deleted chunk %s", deleteID)
+		}
 	}
 
-	s.chunks[id] = bytes
-	s.stack.Push(id)
-	s.lock.Unlock()
+	if err := s.cache.Store(id, bytes); err != nil {
+		return err
+	}
 
+	s.stack.Push(id)
 	return nil
 }

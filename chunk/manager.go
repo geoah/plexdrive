@@ -48,7 +48,8 @@ func NewManager(
 	checkThreads int,
 	loadThreads int,
 	client *drive.Client,
-	maxChunks int) (*Manager, error) {
+	maxChunks int,
+	chunkCache Cache) (*Manager, error) {
 
 	if chunkSize < 4096 {
 		return nil, fmt.Errorf("Chunk size must not be < 4096")
@@ -69,7 +70,7 @@ func NewManager(
 		ChunkSize:  chunkSize,
 		LoadAhead:  loadAhead,
 		downloader: downloader,
-		storage:    NewStorage(chunkSize, maxChunks),
+		storage:    NewStorage(chunkSize, maxChunks, chunkCache),
 		queue:      make(chan *QueueEntry, 100),
 	}
 

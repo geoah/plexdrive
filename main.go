@@ -46,6 +46,7 @@ func main() {
 	argMaxChunks := flag.Int("max-chunks", runtime.NumCPU()*2, "The maximum number of chunks to be stored on disk")
 	argRefreshInterval := flag.Duration("refresh-interval", 1*time.Minute, "The time to wait till checking for changes")
 	argMountOptions := flag.StringP("fuse-options", "o", "", "Fuse mount options (e.g. -fuse-options allow_other,...)")
+	argChunkCacheDir := flag.StringP("chunk-cache-dir", "", "", "Directory for caching chunks")
 	argVersion := flag.Bool("version", false, "Displays program's version information")
 	argUID := flag.Int64("uid", -1, "Set the mounts UID (-1 = default permissions)")
 	argGID := flag.Int64("gid", -1, "Set the mounts GID (-1 = default permissions)")
@@ -116,6 +117,7 @@ func main() {
 		Log.Debugf("chunk-load-threads   : %v", *argChunkLoadThreads)
 		Log.Debugf("chunk-check-threads  : %v", *argChunkCheckThreads)
 		Log.Debugf("chunk-load-ahead     : %v", *argChunkLoadAhead)
+		Log.Debugf("chunk-cache-dir      : %v", *argChunkCacheDir)
 		Log.Debugf("max-chunks           : %v", *argMaxChunks)
 		Log.Debugf("refresh-interval     : %v", *argRefreshInterval)
 		Log.Debugf("fuse-options         : %v", *argMountOptions)
@@ -169,13 +171,26 @@ func main() {
 			os.Exit(4)
 		}
 
+		chunkCache, _ := chunk.NewMemoryCache()
+		if argChunkCacheDir != nil && *argChunkCacheDir != "" {
+			diskCache, err := chunk.NewDiskCache(*argChunkCacheDir)
+			if err != nil {
+				Log.Errorf("Could not get disk cache")
+				Log.Debugf("%v", err)
+				os.Exit(3)
+			}
+			chunkCache = diskCache
+		}
+
 		chunkManager, err := chunk.NewManager(
 			chunkSize,
 			*argChunkLoadAhead,
 			*argChunkCheckThreads,
 			*argChunkLoadThreads,
 			client,
-			*argMaxChunks)
+			*argMaxChunks,
+			chunkCache,
+		)
 		if nil != err {
 			Log.Errorf("%v", err)
 			os.Exit(4)
