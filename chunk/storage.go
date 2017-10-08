@@ -53,7 +53,7 @@ func (s *Storage) Load(id string) []byte {
 func (s *Storage) Store(id string, bytes []byte) error {
 	deleteID := s.stack.Pop()
 	if "" != deleteID {
-		if err := s.cache.Remove(id); err != nil {
+		if err := s.cache.Remove(deleteID); err != nil {
 			Log.Warningf("Could not delete chunk %s, err: %s", deleteID, err)
 		} else {
 			Log.Debugf("Deleted chunk %s", deleteID)
