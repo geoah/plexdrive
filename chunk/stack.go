@@ -26,7 +26,7 @@ func NewStack(maxChunks int) *Stack {
 // Pop pops the first item from the stack
 func (s *Stack) Pop() string {
 	s.lock.Lock()
-	if s.len < s.maxSize {
+	if s.len <= s.maxSize {
 		s.lock.Unlock()
 		return ""
 	}
